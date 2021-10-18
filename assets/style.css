@@ -1,0 +1,89 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: Montserrat, Inter, Roboto, Oxygen, Fira Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  color: #ffffff;
+  background: #202020;
+  padding: 0;
+  margin: 0;
+}
+strong,
+.bold {
+  font-weight: 500;
+}
+ol,
+p,
+ul {
+  line-height: 1.7;
+}
+li {
+  list-style: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  line-height: 1.45;
+}
+h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+h2 {
+  font-size: 1.65rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid #eaecef;
+}
+h3 {
+  font-size: 1.35rem;
+}
+.button {
+  position: relative;
+  place-content: center;
+  place-items: center;
+  width: 100%;
+  text-decoration: none;
+  padding: 0.5rem 1.5rem;
+  white-space: nowrap;
+  font-family: Montserrat, sans-serif;
+  font-weight: 600;
+  outline: none;
+  border-radius: 10px;
+  color: #000000;
+  letter-spacing: 1px;
+  transition: all 0.22s;
+  cursor: pointer;
+  background: linear-gradient(253.94deg, #09F2C3 8.37%, #15DCE4 69.71%);
+  border: 2px solid #15DCE4;
+}
+.btn-default {
+  color: #FFFFFF;
+  border: 2px solid #15DCE4;
+  background: #3C3C3C;
+}
+.btn-ocean {
+  background: linear-gradient(253.94deg, #09F2C3 8.37%, #15DCE4 69.71%);
+}
+.btn-dark {
+  opacity: 0.4;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  opacity: 500%;
+  background: rgba(0, 0, 0, 0.49);
+}
+
+
+
+
