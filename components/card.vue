@@ -24,6 +24,14 @@
       >
         Participate
       </button>
+      <button
+        v-if="$store.getters.userJoined"
+        class="button card__button"
+        :class="{ 'btn-dark': flag}"
+        @click="leave"
+      >
+        Exit
+      </button>
       <div v-if="flag" class="card__colour">
         <p>Your flag colour</p>
         <span
@@ -35,10 +43,10 @@
       </div>
     </div>
     <modal-waiting
-      v-if="flag"
-      @close="flag = false"
+      v-if="waiting"
+      @close="waiting = false"
     />
-    <div v-if="flag" class="card history">
+    <div v-if="$store.getters.userJoined" class="card history">
       <h3 class="card__title">
         Players list
       </h3>
@@ -58,7 +66,7 @@ export default {
   data () {
     return {
       flag: false,
-      field: true,
+      waiting: false,
       fee: 10,
       symbol: '$'
       // wsEvents: {
@@ -78,7 +86,11 @@ export default {
   methods: {
     async participate () {
       await this.$store.dispatch('participate', this.$store.state.userAddress)
-      this.flag = true
+      this.waiting = true
+    },
+    async leave () {
+      await this.$store.dispatch('leave', this.$store.state.userAddress)
+      this.waiting = false
     }
   }
 }

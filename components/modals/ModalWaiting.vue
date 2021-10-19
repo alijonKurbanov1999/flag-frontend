@@ -3,7 +3,7 @@
     <div class="modal-backdrop" @click="close" />
     <div class="modals__window">
       <h3>Waiting other people</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <p>Привет, вы присоединились к игре, вам надо подождать других игроков что бы начать игру!.</p>
       <span class="close-small" @click="close"><img src="~/assets/img/close_small.png"></span>
       <span class="round"><img src="~/assets/img/Union.png"><img src="~/assets/img/waiting.png"></span>
       <span class="bubbles"><img src="~/assets/img/bubbles.png"></span>

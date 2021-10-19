@@ -12,10 +12,10 @@
         </li>
         <li class="navbar__menu-item">
           <button
-            v-if="$store.getters.balance === null"
+            v-if="!$store.state.isRegistered"
             type="button"
             class="button btn-ocean"
-            @click="initWallet()"
+            @click.prevent="initWallet"
           >
             Connect Metamask
           </button>
@@ -29,11 +29,11 @@
       </ul>
     </nav>
     <modal-register
-      v-if="hasAccount"
+      v-if="$store.state.isRegistered && closing"
       title="You're registered"
       text="Lorem ipsum dolor sit amet, consectetur adipisicing."
       img="success"
-      @close="hasAccount = false"
+      @close="closing = false"
     />
   </header>
 </template>
@@ -47,17 +47,20 @@ export default {
   emits: ['openModal'],
   data () {
     return {
-      hasAccount: false
+      closing: false
     }
   },
   methods: {
     async initWallet () {
       await this.$store.dispatch('connectWallet')
-      console.log('UserWallet:', this.$store.state.userAddress)
+      console.log('UserWallet was :', this.$store.state.userAddress)
     },
     async register () {
       await this.$store.dispatch('register', this.$store.state.userAddress)
-      this.hasAccount = true
+      this.closing = true
+      setTimeout(() => {
+        this.closing = false
+      }, 5000)
     }
   }
 }

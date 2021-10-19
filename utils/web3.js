@@ -15,30 +15,31 @@ let contractInstance
 let erc20Instance
 let tokenDecimal
 let tokenSymbol
+let isRegistered
+let userJoined
 
 export const connectWallet = async () => {
   try {
     const { ethereum } = window
     await ethereum.enable()
     return await web3.eth.getCoinbase()
-  } catch (er) {
-    console.log('Error: ', er)
+  } catch (err) {
+    console.log('Please connect your wallet!')
+    return false
   }
 }
 
 export const registerUser = async (userAddress) => {
-  try {
+  if (userAddress) {
     const { ethereum } = window
     await ethereum.enable()
-
+    console.log('UserrrrrrAddressssss: ', userAddress)
     await web4.setProvider(ethereum, userAddress)
-
     const contractAbstraction = web4.getContractAbstraction(contractAbi)
     contractInstance = await contractAbstraction.getInstance(contractAddress)
-    const users = (await contractInstance.getRegistredUsrs())
-      .map(address => address.toLowerCase())
+    const users = (await contractInstance.getRegistredUsrs()).map(address => address.toLowerCase())
 
-    const isRegistered = users.includes(userAddress)
+    isRegistered = users.includes(userAddress)
 
     console.log('isRegistered', isRegistered)
 
@@ -71,65 +72,77 @@ export const registerUser = async (userAddress) => {
     } else {
       console.log('Registration user...')
       await contractInstance.register()
-
-      return {
-        users,
-        isRegistered
-      }
     }
-  } catch (er) {
-    console.log('Error', er)
+  } else {
+    const { ethereum } = window
+    await ethereum.enable()
+    console.log('Please connect your wallet!')
+    return await web3.eth.getCoinbase()
   }
 }
 
 export const participate = async (userAddress) => {
+  if (isRegistered) {
+    console.log('Excellent!!!!!!!!')
+    const participationFee = await contractInstance.participationFee()
+    let registrationBonus = await contractInstance.registrationBonus()
+    const fee = new BigNumber(participationFee).shiftedBy(-tokenDecimal).toString()
+
+    await web4.setProvider(ethereum, userAddress)
+
+    registrationBonus = new BigNumber(registrationBonus).shiftedBy(-tokenDecimal).toString()
+    console.log('participationFee', fee)
+    console.log('registrationBonus', registrationBonus)
+    userJoined = await contractInstance.joined(userAddress)
+    if (userJoined) {
+      // need to leave
+      console.log('You are joined', userJoined)
+    } else {
+      const amount = new BigNumber(AMOUNT).shiftedBy(+tokenDecimal).toString()
+      const allowance = await erc20Instance.allowance(userAddress, contractAddress)
+      if (allowance.toString() !== amount) {
+        await erc20Instance.approve(contractAddress, amount)
+      }
+      console.log('Allowance', allowance.toString())
+      await contractInstance.join()
+      userJoined = await contractInstance.joined(userAddress)
+      console.log('Successful join method')
+    }
+
+    const usersAddress = await contractInstance.getRegistredUsrs()
+    // const usersJoined = await contractInstance.UserJoined()
+    // console.log('Users joined: ', usersJoined)
+
+    // const finishRound = await contractInstance.startRound( )
+    // const finishRound = await contractInstance.finishRound()
+    // console.log('Round finished: ', finishRound)
+
+    // const flagCaptured = await contractInstance.FlagCaptured()
+    // console.log('flag captured: ', flagCaptured)
+
+    // await contractInstance.capture(userAddress, participationFee)
+    return {
+      fee,
+      registrationBonus,
+      usersAddress,
+      userJoined
+    }
+  } else {
+    const { ethereum } = window
+    await ethereum.enable()
+    console.log('Please register on the game!')
+    return await web3.eth.getCoinbase()
+  }
+}
+
+export const leavingGame = async (userAddress) => {
   const { ethereum } = window
   await ethereum.enable()
-
-  const participationFee = await contractInstance.participationFee()
-  let registrationBonus = await contractInstance.registrationBonus()
-  const fee = new BigNumber(participationFee).shiftedBy(-tokenDecimal).toString()
-
-  await web4.setProvider(ethereum, userAddress)
-
-  registrationBonus = new BigNumber(registrationBonus).shiftedBy(-tokenDecimal).toString()
-  console.log('participationFee', fee)
-  console.log('registrationBonus', registrationBonus)
-
-  const amount = new BigNumber(AMOUNT).shiftedBy(+tokenDecimal).toString()
-  const allowance = await erc20Instance.allowance(userAddress, contractAddress)
-
-  console.log('Allowance', allowance.toString())
-
-  if (allowance.toString() !== amount) {
-    await erc20Instance.approve(contractAddress, amount)
-  }
-  const joined = await contractInstance.joined(userAddress)
-  if (joined) {
-    // need to leave
-    console.log('You are joined', joined)
-  } else {
-    await contractInstance.join()
-    console.log('Successful join method')
-  }
-
-  const usersAddress = await contractInstance.getRegistredUsrs()
-  const usersJoined = await contractInstance.UserJoined()
-  console.log('Users joined: ', usersJoined)
-
-  // const finishRound = await contractInstance.startRound( )
-  // const finishRound = await contractInstance.finishRound()
-  // console.log('Round finished: ', finishRound)
-
-  // const flagCaptured = await contractInstance.FlagCaptured()
-  // console.log('flag captured: ', flagCaptured)
-
-  // await contractInstance.capture(userAddress, participationFee)
-  return {
-    fee,
-    registrationBonus,
-    usersAddress
-  }
+  await contractInstance.leave()
+  userJoined = await contractInstance.joined(userAddress)
+  console.log('Exit: ', userJoined)
+  console.log('You left the game: ')
+  return { userJoined }
 }
 
 export const claimMethod = async () => {

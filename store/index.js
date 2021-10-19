@@ -1,7 +1,7 @@
-import { connectWallet, participate, registerUser, claimMethod } from '~/utils/web3'
+import { connectWallet, participate, registerUser, claimMethod, leavingGame } from '~/utils/web3'
 
 export const state = () => ({
-  balance: null,
+  balance: 10,
   userAddress: null,
   isRegistered: false,
   hasAccount: false,
@@ -9,7 +9,7 @@ export const state = () => ({
   registrationBonus: null,
   participationFee: 10,
   flagColour: 'red',
-  userJoined: null,
+  userJoined: Boolean,
   usersAddress: [],
   leaders: [
     { id: 1, address: '90das8u', time: 10, reward: 4 },
@@ -23,17 +23,22 @@ export const mutations = {
   connectWallet (state, address) {
     state.userAddress = address
   },
-  register (state, { balance, symbol }) {
+  register (state, { balance, symbol, isRegistered }) {
     console.log('Balance: ', balance)
     state.balance = balance
     state.symbol = symbol
+    state.isRegistered = isRegistered
   },
-  participate (state, { fee, registrationBonus, usersAddress }) {
+  participate (state, { fee, registrationBonus, usersAddress, joined }) {
     state.participationFee = fee
-    console.log('store fee: ', state.participationFee)
+    // console.log('store fee: ', state.participationFee)
     state.registrationBonus = registrationBonus
     state.usersAddress = usersAddress
-    console.log('Users address store: ', state.usersAddress)
+    state.userJoined = joined
+    // console.log('Users address store: ', state.usersAddress)
+  },
+  leaveGame (state, userJoined) {
+    state.userJoined = userJoined
   },
   addLeader (state, item) {
     console.log('Leader item:', item)
@@ -54,6 +59,10 @@ export const actions = {
     const participationFee = await participate(userAddress)
     commit('participate', participationFee)
   },
+  async leave ({ commit }, userAddress) {
+    const joined = await leavingGame(userAddress)
+    commit('leaveGame', joined)
+  },
   addLeader ({ commit }, item) {
     commit('addLeader', item)
   },
@@ -73,5 +82,8 @@ export const getters = {
   },
   usersAddress (state) {
     return state.usersAddress
+  },
+  userJoined (state) {
+    return state.userJoined
   }
 }
