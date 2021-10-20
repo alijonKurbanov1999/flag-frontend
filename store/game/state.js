@@ -3,5 +3,8 @@ export default () => ({
   participationFee: 10,
   flagColour: 'red',
   userJoined: false,
-  usersAddress: []
+  usersAddress: [],
+  ownerAddress: '',
+  time: 50,
+  round: 50
 })

@@ -75,6 +75,11 @@ h3 {
 .btn-dark {
   opacity: 0.4;
 }
+.btn-danger {
+  border: 2px solid #ffbfbf;
+  background: #ff0000;
+  color: #FFFFFF;
+}
 .modal-backdrop {
   position: fixed;
   top: 0;

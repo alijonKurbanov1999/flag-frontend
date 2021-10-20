@@ -8,26 +8,37 @@
         <img :src="require(`~/assets/img/flags/${flagColour}.png`)">
       </div>
       <div class="card__text-field">
-        <div class="text__field-participation">
+        <div v-if="flag" class="text__field-participation">
           <p>Participation fee</p><span>{{ participationFee }} {{ symbol }}</span>
         </div>
-        <div v-if="flag" class="text__field-capture">
-          <p>Owner address </p><span style="color: #00CC21">90das8u</span>
-          <p>Time left </p> <span>50 sec</span>
-          <p>Round pool </p><span>50 $</span>
+        <div v-else class="text__field-capture">
+          <p>Owner address </p><span style="color: #00CC21">{{ ownerAddress }}</span>
+          <p>Time left </p> <span>{{ time }} sec</span>
+          <p>Round pool </p><span>{{ round }} $</span>
         </div>
       </div>
       <button
         class="button card__button"
-        :class="{ 'btn-dark': flag}"
+        :class="{ 'btn-dark': userJoined}"
         @click="participate"
       >
         Participate
       </button>
       <button
+        class="button card__button btn-default"
+        @click="capture"
+      >
+        Capture the flag
+      </button>
+      <button
+        class="button card__button btn-default"
+        @click="startGame"
+      >
+        start game
+      </button>
+      <button
         v-if="userJoined"
-        class="button card__button"
-        :class="{ 'btn-dark': flag}"
+        class="button card__button btn-danger"
         @click="leave"
       >
         Exit
@@ -83,11 +94,14 @@ export default {
       userJoined: 'game/userJoined',
       flagColour: 'game/flagColour',
       symbol: 'wallet/symbol',
-      userAddress: 'wallet/userAddress'
+      userAddress: 'wallet/userAddress',
+      ownerAddress: 'game/ownerAddress',
+      time: 'game/time',
+      round: 'game/round'
     })
-  },
-  mounted () {
-    console.log("let's see what will we get! ", this.usersAddress)
+    // ownerAddress () {
+    //   return this.userAddress ? this.userAddress.slice(0, 8) : ''
+    // }
   },
   // async mounted () {
   //   const socket = new WebSocket('ws://localhost:8081')
@@ -105,6 +119,12 @@ export default {
     },
     async leave () {
       await this.$store.dispatch('game/leave', this.userAddress)
+    },
+    async capture () {
+      await this.$store.dispatch('game/capture', this.userAddress)
+    },
+    async startGame () {
+      await this.$store.dispatch('game/starting', this.userAddress)
     }
   }
 }

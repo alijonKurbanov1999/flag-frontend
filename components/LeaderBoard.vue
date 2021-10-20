@@ -30,7 +30,7 @@
       </li>
       <li>
         <button
-          v-if="claimId"
+          v-if="leader.address.toLowerCase() === userAddress"
           class="button btn-ocean"
           @click="openClaim"
         >
@@ -46,19 +46,16 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'leader-board',
   emits: ['open-claim'],
-  mounted () {
-    const users = this.userAddress
-    console.log('My own users: ', users)
-    return users
-  },
   computed: {
     ...mapGetters({
       leaders: 'leaders/leaders',
       userAddress: 'wallet/userAddress'
-    }),
-    claimId () {
-      return this.leaders.map(x => x.address === this.userAddress)
-    }
+    })
+  },
+  mounted () {
+    const users = this.userAddress
+    console.log('My own users: ', users)
+    return users
   },
   methods: {
     openClaim () {

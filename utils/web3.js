@@ -38,7 +38,6 @@ export const registerUser = async (userAddress) => {
     const contractAbstraction = web4.getContractAbstraction(contractAbi)
     contractInstance = await contractAbstraction.getInstance(contractAddress)
     const users = (await contractInstance.getRegistredUsrs()).map(address => address.toLowerCase())
-
     isRegistered = users.includes(userAddress)
 
     console.log('isRegistered', isRegistered)
@@ -149,6 +148,28 @@ export const leavingGame = async (userAddress) => {
     return registerUser()
   }
   return { userJoined }
+}
+export const StartGame = async () => {
+  const { ethereum } = window
+  await ethereum.enable()
+  const start = await contractInstance.startRound()
+  // const finish = await contractInstance.finishRound()
+  console.log('Your capture flag: ', start)
+}
+
+export const captureFlag = async () => {
+  const { ethereum } = window
+  await ethereum.enable()
+  const capture = (await contractInstance.capture()).logs[0]
+
+  console.log('Your capture flag logs: ', capture)
+  const address = capture.address
+  console.log('Your own address is: ', address)
+  const round = capture.args.round.toString()
+  console.log('Your pool round is : ', round)
+  const time = capture.args.startTime.toString()
+  console.log('Your time is : ', time)
+  return { address, round, time }
 }
 
 export const claimMethod = async () => {

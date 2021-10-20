@@ -8,5 +8,10 @@ export default {
   },
   leave (state, userJoined) {
     state.userJoined = userJoined
+  },
+  capture (state, { address, round, time }) {
+    state.ownerAddress = address
+    state.time = time
+    state.round = round
   }
 }

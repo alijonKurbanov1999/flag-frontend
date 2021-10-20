@@ -10,5 +10,14 @@ export default {
   },
   flagColour (state) {
     return state.flagColour
+  },
+  ownerAddress (state) {
+    return state.ownerAddress
+  },
+  time (state) {
+    return state.time
+  },
+  round (state) {
+    return state.round
   }
 }
