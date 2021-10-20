@@ -12,7 +12,7 @@
         </li>
         <li class="navbar__menu-item">
           <button
-            v-if="!$store.state.isRegistered"
+            v-if="!isRegistered"
             type="button"
             class="button btn-ocean"
             @click.prevent="initWallet"
@@ -22,14 +22,14 @@
           <div v-else class="item__balance">
             Balance
             <span style="color: white">
-              {{ `${$store.getters.balance} ${$store.getters.symbol}` }}
+              {{ `${balance} ${symbol}` }}
             </span>
           </div>
         </li>
       </ul>
     </nav>
     <modal-register
-      v-if="$store.state.isRegistered && closing"
+      v-if="isRegistered && closing"
       title="You're registered"
       text="Lorem ipsum dolor sit amet, consectetur adipisicing."
       img="success"
@@ -39,8 +39,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import ModalRegister from '~/components/Modals/modalRegister'
-
 export default {
   name: 'index',
   components: { ModalRegister },
@@ -50,13 +50,22 @@ export default {
       closing: false
     }
   },
+  computed: {
+    ...mapGetters({
+      balance: 'wallet/balance',
+      symbol: 'wallet/symbol',
+      isRegistered: 'wallet/isRegistered',
+      userAddress: 'wallet/userAddress',
+      hasAccount: 'wallet/hasAccount'
+    })
+  },
   methods: {
     async initWallet () {
-      await this.$store.dispatch('connectWallet')
-      console.log('UserWallet was :', this.$store.state.userAddress)
+      await this.$store.dispatch('wallet/connectWallet', this.userAddress)
+      console.log('UserWallet was :', this.userAddress)
     },
     async register () {
-      await this.$store.dispatch('register', this.$store.state.userAddress)
+      await this.$store.dispatch('wallet/register', this.userAddress)
       this.closing = true
       setTimeout(() => {
         this.closing = false

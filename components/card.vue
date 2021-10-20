@@ -5,13 +5,13 @@
         The round lasts 100 seconds.
       </h3>
       <div class="card__flag">
-        <img :src="require(`~/assets/img/flags/${$store.state.flagColour}.png`)">
+        <img :src="require(`~/assets/img/flags/${flagColour}.png`)">
       </div>
       <div class="card__text-field">
-        <div v-if="field" class="text__field-participation">
-          <p>Participation fee</p><span>{{ $store.state.participationFee }} {{ $store.state.symbol }}</span>
+        <div class="text__field-participation">
+          <p>Participation fee</p><span>{{ participationFee }} {{ symbol }}</span>
         </div>
-        <div v-if="!field" class="text__field-capture">
+        <div v-if="flag" class="text__field-capture">
           <p>Owner address </p><span style="color: #00CC21">90das8u</span>
           <p>Time left </p> <span>50 sec</span>
           <p>Round pool </p><span>50 $</span>
@@ -25,7 +25,7 @@
         Participate
       </button>
       <button
-        v-if="$store.getters.userJoined"
+        v-if="userJoined"
         class="button card__button"
         :class="{ 'btn-dark': flag}"
         @click="leave"
@@ -36,9 +36,9 @@
         <p>Your flag colour</p>
         <span
           class="style-colour"
-          :style="{color: $store.state.flagColour}"
+          :style="{color: flagColour}"
         >
-          {{ $store.state.flagColour }}
+          {{ flagColour }}
         </span>
       </div>
     </div>
@@ -46,12 +46,12 @@
       v-if="waiting"
       @close="waiting = false"
     />
-    <div v-if="$store.getters.userJoined" class="card history">
+    <div v-if="userJoined" class="card history">
       <h3 class="card__title">
         Players list
       </h3>
-      <ul v-for="user in $store.getters.usersAddress" :key="user.id" class="card__lists">
-        <li>{{ user.slice(0, 8) }} waiting the game</li>
+      <ul v-for="user in usersAddress" :key="user.id" class="card__lists">
+        <li>{{ user.slice(0, 7) }} waiting the game</li>
       </ul>
       <div class="shadow" />
     </div>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import ModalWaiting from '~/components/Modals/modalWaiting'
 export default {
   name: 'card',
@@ -66,9 +67,7 @@ export default {
   data () {
     return {
       flag: false,
-      waiting: false,
-      fee: 10,
-      symbol: '$'
+      waiting: false
       // wsEvents: {
       //   user: '/user',
       //   round: '/round',
@@ -76,6 +75,19 @@ export default {
       //   userBalance: '/balance/{user}'
       // }
     }
+  },
+  computed: {
+    ...mapGetters({
+      participationFee: 'game/participationFee',
+      usersAddress: 'game/usersAddress',
+      userJoined: 'game/userJoined',
+      flagColour: 'game/flagColour',
+      symbol: 'wallet/symbol',
+      userAddress: 'wallet/userAddress'
+    })
+  },
+  mounted () {
+    console.log("let's see what will we get! ", this.usersAddress)
   },
   // async mounted () {
   //   const socket = new WebSocket('ws://localhost:8081')
@@ -85,12 +97,14 @@ export default {
   // },
   methods: {
     async participate () {
-      await this.$store.dispatch('participate', this.$store.state.userAddress)
+      await this.$store.dispatch('game/participate', this.userAddress)
       this.waiting = true
+      setTimeout(() => {
+        this.waiting = false
+      }, 4000)
     },
     async leave () {
-      await this.$store.dispatch('leave', this.$store.state.userAddress)
-      this.waiting = false
+      await this.$store.dispatch('game/leave', this.userAddress)
     }
   }
 }

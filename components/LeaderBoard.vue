@@ -18,7 +18,7 @@
       </li>
       <li class="leader-address">
         <span class="leader-title">Address</span>
-        <span>{{ leader.address }}</span>
+        <span>{{ leader.address.slice(0, 7) }}</span>
       </li>
       <li class="leader-time">
         <span class="leader-title">Time</span>
@@ -30,7 +30,7 @@
       </li>
       <li>
         <button
-          v-if="leader.address === $store.state.userAddress"
+          v-if="claimId"
           class="button btn-ocean"
           @click="openClaim"
         >
@@ -42,12 +42,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'leader-board',
   emits: ['open-claim'],
+  mounted () {
+    const users = this.userAddress
+    console.log('My own users: ', users)
+    return users
+  },
   computed: {
-    leaders () {
-      return this.$store.state.leaders
+    ...mapGetters({
+      leaders: 'leaders/leaders',
+      userAddress: 'wallet/userAddress'
+    }),
+    claimId () {
+      return this.leaders.map(x => x.address === this.userAddress)
     }
   },
   methods: {

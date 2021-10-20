@@ -110,6 +110,7 @@ export const participate = async (userAddress) => {
     }
 
     const usersAddress = await contractInstance.getRegistredUsrs()
+    console.log('USERS ADDRESS ARE: ', usersAddress)
     // const usersJoined = await contractInstance.UserJoined()
     // console.log('Users joined: ', usersJoined)
 
@@ -136,12 +137,17 @@ export const participate = async (userAddress) => {
 }
 
 export const leavingGame = async (userAddress) => {
-  const { ethereum } = window
-  await ethereum.enable()
-  await contractInstance.leave()
-  userJoined = await contractInstance.joined(userAddress)
-  console.log('Exit: ', userJoined)
-  console.log('You left the game: ')
+  if (isRegistered) {
+    const { ethereum } = window
+    await ethereum.enable()
+    await contractInstance.leave()
+    userJoined = await contractInstance.joined(userAddress)
+    console.log('Exit: ', userJoined)
+    console.log('You left the game: ')
+  } else {
+    console.log('Please register to game!!!!!!!!')
+    return registerUser()
+  }
   return { userJoined }
 }
 
