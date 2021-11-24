@@ -61,12 +61,6 @@ export default {
       field: true,
       fee: 10,
       symbol: '$'
-      // wsEvents: {
-      //   user: '/user',
-      //   round: '/round',
-      //   flag: '/flagCaptures',
-      //   userBalance: '/balance/{user}'
-      // }
     }
   },
   // async mounted () {

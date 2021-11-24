@@ -30,7 +30,7 @@
       </li>
       <li>
         <button
-          v-if="leader.address === $store.state.userAddress"
+          v-if="leader.address !== $store.state.userAddress"
           class="button btn-ocean"
           @click="openClaim"
         >

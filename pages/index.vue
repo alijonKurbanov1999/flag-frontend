@@ -1,15 +1,12 @@
 <template>
-  <div>
-    <the-navbar />
-    <div class="container">
-      <card />
-      <modal-claim v-if="flag" @close="flag=false" @show-claim="ShowClaim" />
-      <modal-register
-        v-if="registered"
-        @close="registered = false"
-      />
-      <leader-board @open-claim="openClaim" />
-    </div>
+  <div class="container">
+    <card />
+    <modal-claim v-if="flag" @close="flag=false" @show-claim="ShowClaim" />
+    <modal-register
+      v-if="registered"
+      @close="registered = false"
+    />
+    <leader-board @open-claim="openClaim" />
   </div>
 </template>
 
@@ -18,10 +15,9 @@ import ModalClaim from '~/components/Modals/modalClaim'
 import ModalRegister from '~/components/Modals/modalRegister'
 import LeaderBoard from '~/components/leaderBoard'
 import Card from '~/components/card'
-import TheNavbar from '~/components/navigation'
 export default {
   name: 'main',
-  components: { ModalClaim, ModalRegister, Card, LeaderBoard, TheNavbar },
+  components: { ModalClaim, ModalRegister, Card, LeaderBoard },
   data () {
     return {
       flag: false,

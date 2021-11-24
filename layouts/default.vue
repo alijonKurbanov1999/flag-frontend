@@ -1,7 +1,15 @@
 <template>
-  <nuxt />
+  <div>
+    <navigation/>
+    <nuxt />
+  </div>
 </template>
 <script>
+import navigation from "~/components/navigation";
+
+export default {
+  components: {navigation}
+}
 // import Nes from '@hapi/nes/lib/client.js'
 //
 // const wsUrl = 'ws://176.209.225.53:3000/api'
@@ -12,7 +20,7 @@
 //   flag: '/flagCaptures',
 //   userBalance: '/balance/{user}'
 // }
-export default {
+// export default {
   // mounted () {
   //   const client = new Nes.Client(wsUrl)
   //
@@ -32,5 +40,5 @@ export default {
   //   //   })
   //   // }
   // }
-}
+// }
 </script>
